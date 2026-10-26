@@ -1,0 +1,104 @@
+﻿
+images 
+and back up path 
+
+   /var/lib/vz 
+
+dump is backup and notes and logs
+
+در Proxmox VE
+، فایل‌ها و تنظیمات در مسیرهای مشخصی ذخیره می‌شوند. بخش عمده‌ای از پیکربندی‌های کلاستر در
+ `/etc/pve/` 
+(یک فایل‌سیستم مجازی) قرار دارد، در حالی که داده‌های حجیم مانند دیسک ماشین‌های مجازی و
+ ISOها 
+معمولاً در
+ `/var/lib/vz/` 
+ذخیره می‌شوند.
+
+### ⚙️ پیکربندی‌های سراسری کلاستر
+ (`/etc/pve/`)
+این مسیر توسط 
+`pmxcfs` 
+مدیریت و به‌صورت لحظه‌ای بین نودهای کلاستر همگام می‌شود.
+* **`/etc/pve/datacenter.cfg`**: 
+تنظیمات پیش‌فرض سراسری دیتاسنتر (زبان، کیبورد و...).
+* **`/etc/pve/storage.cfg`**: 
+تعریف تمام فضاهای ذخیره‌سازی (محلی، اشتراکی و...).
+* **`/etc/pve/user.cfg`**: 
+لیست کاربران، گروه‌ها و دسترسی‌های آن‌ها.
+* **`/etc/pve/corosync.conf`**: 
+فایل اصلی پیکربندی کلاستر و ارتباط نودها.
+* **`/etc/pve/vzdump.cron`**:
+ زمان‌بندی سراسری بک‌آپ‌گیری خودکار.
+* **`/etc/pve/ceph.conf`**: 
+پیکربندی کلاستر Ceph (در صورت وجود).
+* **`/etc/pve/firewall/cluster.fw`**: 
+قوانین فایروال سطح دیتاسنتر.
+* **`/etc/pve/ha/resources.cfg`**: 
+منابع تحت مدیریت High Availability.
+* **کلیدهای امنیتی**:
+ `authkey.pub` (کلید عمومی) و
+ `priv/authkey.key` (کلید خصوصی).
+
+### 🖥️ پیکربندی ماشین‌های مجازی (KVM)
+* **`/etc/pve/qemu-server/<VMID>.conf`**:
+ فایل پیکربندی هر ماشین مجازی KVM.
+* **`/etc/pve/nodes/<nodename>/qemu-server/<VMID>.conf`**:
+ نسخه محلی پیکربندی روی هر نود (قابل انتقال).
+* **`/etc/pve/firewall/<VMID>.fw`**:
+ قوانین فایروال اختصاصی هر ماشین مجازی.
+
+### 📦 پیکربندی کانتینرها (LXC)
+* **`/etc/pve/lxc/<CTID>.conf`**: 
+فایل پیکربندی هر کانتینر LXC.
+* **`/etc/pve/nodes/<nodename>/lxc/<CTID>.conf`**:
+ نسخه محلی پیکربندی کانتینر روی نود مربوطه.
+
+### 🌐 پیکربندی شبکه
+* **`/etc/network/interfaces`**: 
+فایل اصلی پیکربندی شبکه (پل‌ها، باندها، IPها).
+* **`/etc/network/interfaces.new`**: 
+فایل موقت برای اعمال تغییرات شبکه بدون قطعی.
+* **`/etc/hosts`** و **`/etc/hostname`**: 
+تنظیمات نام و resolve شدن نود.
+* **`/etc/resolv.conf`**: تنظیمات DNS.
+* **`/usr/local/lib/systemd/network/`**:
+ فایل‌های `.link` برای نام‌گذاری پایدار اینترفیس‌ها.
+
+### 💾 داده‌ها (دیسک‌ها، ISOها و بک‌آپ‌ها)
+فضای ذخیره‌سازی پیش‌فرض 
+`local` 
+معمولاً در مسیر 
+`/var/lib/vz/` 
+قرار دارد.
+* **`/var/lib/vz/images/<VMID>/`**: 
+تصاویر دیسک ماشین‌های مجازی (فرمت‌های `qcow2`، `raw`).
+* **`/var/lib/vz/template/iso/`**: 
+فایل‌های ISO سیستم‌عامل.
+* **`/var/lib/vz/template/cache/`**: 
+قالب‌های کانتینر (LXC).
+* **`/var/lib/vz/dump/`**: 
+فایل‌های پشتیبان (بک‌آپ) ماشین‌ها و کانتینرها.
+* **`/var/lib/vz/snippets/`**: 
+اسکریپت‌ها و فایل‌های سفارشی (مانند `cloud-init`).
+* **`/var/lib/lxc/`**: 
+داده‌های کانتینرهای LXC (در برخی پیکربندی‌ها).
+
+### 🗄️ پیکربندی و داده‌های Ceph
+* **`/etc/pve/ceph.conf`**: 
+فایل پیکربندی اصلی کلاستر Ceph.
+* **`/etc/ceph/ceph.conf`**: 
+لینک نمادین (Symlink) به فایل بالا.
+* **`/etc/pve/priv/ceph.client.admin.keyring`**: 
+کلید دسترسی ادمین Ceph.
+* **`/etc/pve/priv/ceph/<STORAGE_ID>.keyring`**: 
+کلید اتصال به فضای ذخیره‌سازی RBD.
+* **`/etc/pve/ceph/`**: 
+دایرکتوری برای فایل‌های پیکربندی عمومی Ceph.
+
+### 🔒 فایل‌های SSL و کلیدهای امنیتی
+* **`/etc/pve/nodes/<nodename>/pve-ssl.pem`**: 
+گواهی SSL عمومی وب‌سرور.
+* **`/etc/pve/nodes/<nodename>/priv/pve-ssl.key`**: 
+کلید خصوصی SSL.
+

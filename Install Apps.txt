@@ -1,0 +1,23 @@
+﻿---------------------------------------------------
+install app for use kvm 
+
+#sudo apt install qemu-system-x86   libvirt-daemon-system  virt-manager    virtinst libvirt-client
+
+----------------------------------------------------
+install netwotk tools ( customize)
+# sudo apt install  bridge-utils 
+
+
+-----------------------------------------------------
+add selected user to kvm group 
+# sudo usermod -aG kvm sep
+
+-----------------------------------------------------
+can set permit root login with ssh in this file 
+
+write  
+     PermitRootLogin  yes 
+in 
+      /etc/ssh/ssh_config
+
+---------------------------------------------------------
